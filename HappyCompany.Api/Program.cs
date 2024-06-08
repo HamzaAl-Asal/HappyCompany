@@ -1,7 +1,11 @@
+using HappyCompany.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<HappyCompanyDbContext>();
 
 var app = builder.Build();
 
