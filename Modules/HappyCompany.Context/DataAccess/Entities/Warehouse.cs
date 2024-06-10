@@ -7,5 +7,10 @@
         public string Country { get; set; }
 
         public ICollection<Item> Items { get; set; }
+
+        public Warehouse()
+        {
+            Items = new HashSet<Item>();
+        }
     }
 }

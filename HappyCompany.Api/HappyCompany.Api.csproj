@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\HappyCompany.App\HappyCompany.App.csproj" />
+    <ProjectReference Include="..\Modules\HappyCompany.Common\HappyCompany.Common.csproj" />
   </ItemGroup>
 
 </Project>

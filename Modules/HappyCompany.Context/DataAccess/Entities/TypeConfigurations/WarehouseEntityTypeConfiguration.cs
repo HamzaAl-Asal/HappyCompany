@@ -13,6 +13,9 @@ namespace HappyCompany.Context.DataAccess.Entities.TypeConfigurations
                    .IsRequired()
                    .HasMaxLength(1000);
 
+            builder.HasIndex(w => w.Name)
+                  .IsUnique();
+
             builder.Property(w => w.Address)
                    .IsRequired();
 

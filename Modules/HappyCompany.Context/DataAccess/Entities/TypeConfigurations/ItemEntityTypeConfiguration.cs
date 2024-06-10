@@ -13,6 +13,9 @@ namespace HappyCompany.Context.DataAccess.Entities.TypeConfigurations
                    .IsRequired()
                    .HasMaxLength(100);
 
+            builder.HasIndex(w => w.Name)
+                 .IsUnique();
+
             builder.Property(i => i.SKUCode);
 
             builder.Property(i => i.Qty)
