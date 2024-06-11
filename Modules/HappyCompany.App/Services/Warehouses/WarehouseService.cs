@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using HappyCompany.Abstraction.Models;
 using HappyCompany.Abstraction.Models.Warehouses;
 using HappyCompany.App.Options;
 using HappyCompany.Context;
-using HappyCompany.Context.DataAccess.Entities;
+using HappyCompany.Context.DataAccess.Entities.Warehouses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -32,12 +33,13 @@ namespace HappyCompany.App.Services.Warehouses
             this.cacheKeyOptions = cacheKeyOptions.CurrentValue;
         }
 
-        public async Task<IEnumerable<WarehouseViewModel>> GetWarehousesAsync()
+        public async Task<PaginationResult<WarehouseViewModel>> GetWarehousesAsync(int pageNumber, int pageSize)
         {
             logger.LogInformation("--> Entering GetWarehousesAsync method.");
 
-            List<WarehouseViewModel> warehousesViewModel;
             var warehousesCacheKey = cacheKeyOptions.Warehouses ?? string.Empty;
+
+            List<WarehouseViewModel> warehousesViewModel;
 
             if (!cache.TryGetValue(warehousesCacheKey, out warehousesViewModel))
             {
@@ -49,30 +51,33 @@ namespace HappyCompany.App.Services.Warehouses
                 warehousesViewModel = mapper.Map<List<WarehouseViewModel>>(warehouses);
 
                 cache.Set(warehousesCacheKey, warehousesViewModel, TimeSpan.FromHours(1));
-
-                logger.LogInformation("--> Exiting GetWarehousesAsync method with {Count} warehouses.", warehousesViewModel.Count());
-                return warehousesViewModel;
             }
 
-            logger.LogInformation("Fetching Warehouses from Cache.");
+            var totalCount = warehousesViewModel.Count;
 
-            if (warehousesViewModel == null)
+            var paginatedItems = warehousesViewModel
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            logger.LogInformation("--> Exiting GetWarehousesAsync method with {Count} warehouses.", paginatedItems.Count);
+
+            return new PaginationResult<WarehouseViewModel>
             {
-                logger.LogInformation("No warehouses found.");
-                return Enumerable.Empty<WarehouseViewModel>();
-            }
-
-            logger.LogInformation("--> Exiting GetWarehousesAsync method with {Count} warehouses.", warehousesViewModel.Count());
-
-            return warehousesViewModel;
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = totalCount,
+                Items = paginatedItems
+            };
         }
 
-        public async Task<WarehouseItemsViewModel> GetWarehouseWithItemsAsync(int warehouseId)
+        public async Task<WarehouseItemsPaginationResult> GetWarehouseWithItemsAsync(int pageNumber, int pageSize, int warehouseId)
         {
             logger.LogInformation("--> Entering GetWarehouseWithItemsAsync method with WarehouseId: {WarehouseId}.", warehouseId);
 
-            WarehouseItemsViewModel warehouseItemsViewModel;
             var warehousePrefixKey = $"{cacheKeyOptions?.WarehousePrefix}{warehouseId}";
+
+            WarehouseItemsViewModel warehouseItemsViewModel;
             if (!cache.TryGetValue(warehousePrefixKey, out warehouseItemsViewModel))
             {
                 logger.LogInformation("Fetching Warehouse with items from Database.");
@@ -83,23 +88,28 @@ namespace HappyCompany.App.Services.Warehouses
                 warehouseItemsViewModel = mapper.Map<WarehouseItemsViewModel>(warehouseWithItems);
 
                 cache.Set(warehousePrefixKey, warehouseItemsViewModel, TimeSpan.FromHours(1));
-
-                logger.LogInformation("--> Exiting GetWarehouseWithItemsAsync method with {ItemCount} items.", warehouseItemsViewModel.Items.Count());
-
-                return warehouseItemsViewModel;
             }
 
-            logger.LogInformation("Fetching Warehouse with items from Cache.");
+            var paginatedItems = warehouseItemsViewModel.Items
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            if (warehouseItemsViewModel == null)
+            var warehouse = mapper.Map<WarehouseViewModel>(warehouseItemsViewModel);
+
+            logger.LogInformation("--> Exiting GetWarehouseWithItemsAsync method with {ItemCount} items.", paginatedItems.Count);
+
+            return new WarehouseItemsPaginationResult
             {
-                logger.LogWarning("Warehouse with Id: {WarehouseId} not found.", warehouseId);
-                return new WarehouseItemsViewModel();
-            }
-
-            logger.LogInformation("--> Exiting GetWarehouseWithItemsAsync method with {ItemCount} items.", warehouseItemsViewModel.Items.Count());
-
-            return warehouseItemsViewModel;
+                Warehouse = warehouse,
+                ItemsPaginationResult = new PaginationResult<ItemViewModel>
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalItems = warehouseItemsViewModel.Items.Count(),
+                    Items = paginatedItems
+                }
+            };
         }
 
         public async Task<IResult> CreateWarehouseWithItemsAsync(WarehouseItemsViewModel warehouseViewModel)
@@ -168,15 +178,15 @@ namespace HappyCompany.App.Services.Warehouses
             return Results.Ok("Warehouse has been deleted successfully !");
         }
 
-        private async Task<List<string>> GetExistingItemsAsync(IEnumerable<ItemViewModel> items)
+        private async Task<List<string>> GetExistingItemsAsync(IEnumerable<ItemViewModel> itemsViewModel)
         {
             var existingItems = new List<string>();
 
-            foreach (var itemViewModel in items)
+            foreach (var item in itemsViewModel)
             {
                 var existingItem = await context.Items
                     .AsNoTracking()
-                    .SingleOrDefaultAsync(i => i.Name == itemViewModel.Name);
+                    .SingleOrDefaultAsync(i => i.Name == item.Name);
 
                 if (existingItem != null)
                 {

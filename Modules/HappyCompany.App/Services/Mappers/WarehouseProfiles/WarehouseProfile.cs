@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using HappyCompany.Abstraction.Models.Warehouses;
-using HappyCompany.Context.DataAccess.Entities;
+using HappyCompany.Context.DataAccess.Entities.Warehouses;
 
-namespace HappyCompany.App.Services.Mappers
+namespace HappyCompany.App.Services.Mappers.WarehouseProfiles
 {
     public class WarehouseProfile : Profile
     {

@@ -18,6 +18,7 @@
     <ProjectReference Include="..\HappyCompany.Abstraction\HappyCompany.Abstraction.csproj" />
     <ProjectReference Include="..\HappyCompany.Common\HappyCompany.Common.csproj" />
     <ProjectReference Include="..\HappyCompany.Context\HappyCompany.Context.csproj" />
+    <ProjectReference Include="..\HappyCompany.JwtAuthentication\HappyCompany.JwtAuthentication.csproj" />
   </ItemGroup>
 
 </Project>

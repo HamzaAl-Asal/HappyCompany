@@ -1,6 +1,6 @@
-﻿using HappyCompany.App.BackgroundServices;
-using HappyCompany.App.Options;
-using HappyCompany.App.Services.Mappers;
+﻿using HappyCompany.App.Options;
+using HappyCompany.App.Services.Mappers.WarehouseProfiles;
+using HappyCompany.App.Services.Users;
 using HappyCompany.App.Services.Warehouses;
 using HappyCompany.Common;
 using Microsoft.Extensions.Configuration;
@@ -14,12 +14,11 @@ namespace HappyCompany.App
         public static void RegisterAppModuleServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IWarehouseService, WarehouseService>();
+            services.AddScoped<IUserService, UserService>();
+           
             services.AddAutoMapper(typeof(WarehouseProfile).Assembly);
             services.AddMemoryCache();
-
-            services.AddSingleton<WarehouseCacheInitializationBackgroundService>()
-                   .AddHostedService(provider =>
-                   provider.GetRequiredService<WarehouseCacheInitializationBackgroundService>());
+          
 
             // serilog
             Log.Logger = new LoggerConfiguration()

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HappyCompany.Context.DataAccess.Entities.Warehouses;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace HappyCompany.Context.DataAccess.Entities.TypeConfigurations
+namespace HappyCompany.Context.DataAccess.Entities.TypeConfigurations.Warehouses
 {
     public class ItemEntityTypeConfiguration : IEntityTypeConfiguration<Item>
     {

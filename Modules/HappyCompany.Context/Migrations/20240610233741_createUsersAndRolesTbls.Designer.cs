@@ -2,6 +2,7 @@
 using HappyCompany.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HappyCompany.Context.Migrations
 {
     [DbContext(typeof(HappyCompanyDbContext))]
-    partial class HappyCompanyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610233741_createUsersAndRolesTbls")]
+    partial class createUsersAndRolesTbls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.31");
@@ -68,7 +70,7 @@ namespace HappyCompany.Context.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -91,7 +93,7 @@ namespace HappyCompany.Context.Migrations
                             Email = "admin@happywarehouse.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            Password = "P@ssw0rd",
+                            PasswordHash = "$2a$11$RGtCyrCUwB9B3.SoaaIEm.4z0g2KdBdNoqZjOVunOKKrbS/1./TmS",
                             RoleId = 1
                         });
                 });

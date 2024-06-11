@@ -1,4 +1,4 @@
-﻿namespace HappyCompany.Context.DataAccess.Entities
+﻿namespace HappyCompany.Context.DataAccess.Entities.Warehouses
 {
     public class Warehouse : EntityBase
     {
