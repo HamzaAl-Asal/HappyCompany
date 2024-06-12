@@ -10,8 +10,6 @@ namespace HappyCompany.Api.Endpoints.Warehouses
     {
         public static void MapUserEndpoints(this IEndpointRouteBuilder builder)
         {
-            var roles = $"{nameof(UserRole.Admin)}, {nameof(UserRole.Management)}, {nameof(UserRole.Auditor)}";
-
             builder.MapPost(Constant.UsersLoginRouteName, HandleVerifyLoginUserAsync)
                 .AllowAnonymous()
                 .WithTags(Constant.UserTagName);
