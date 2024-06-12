@@ -28,12 +28,12 @@ namespace HappyCompany.Api.Endpoints.Warehouses
                 .WithTags(Constant.WarehouseTagName);
         }
 
-        private static async Task<PaginationResult<WarehouseViewModel>> HandleGetWarehousesAsync([FromQuery] int pageNumber, [FromQuery] int pageSize, [FromServices] IWarehouseService warehouseService)
+        private static async Task<PaginationResult<WarehouseViewModel>> HandleGetWarehousesAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromServices] IWarehouseService warehouseService)
         {
             return await warehouseService.GetWarehousesAsync(pageNumber, pageSize);
         }
 
-        private static async Task<WarehouseItemsPaginationResult> HandleGetWarehouseWithItemsAsync([FromQuery] int pageNumber, [FromQuery] int pageSize, [FromRoute] int warehouseId, [FromServices] IWarehouseService warehouseService)
+        private static async Task<WarehouseItemsPaginationResult> HandleGetWarehouseWithItemsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromRoute] int warehouseId, [FromServices] IWarehouseService warehouseService)
         {
             return await warehouseService.GetWarehouseWithItemsAsync(pageNumber, pageSize, warehouseId);
         }
