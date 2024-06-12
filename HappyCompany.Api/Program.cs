@@ -1,3 +1,4 @@
+using HappyCompany.Api.Endpoints.Users;
 using HappyCompany.Api.Endpoints.Warehouses;
 using HappyCompany.App;
 using HappyCompany.Context;
