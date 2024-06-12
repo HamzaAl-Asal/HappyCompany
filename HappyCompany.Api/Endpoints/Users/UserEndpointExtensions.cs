@@ -4,7 +4,7 @@ using HappyCompany.Common;
 using HappyCompany.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HappyCompany.Api.Endpoints.Warehouses
+namespace HappyCompany.Api.Endpoints.Users
 {
     public static class UserEndpointExtensions
     {
