@@ -11,8 +11,6 @@ namespace HappyCompany.Api.Endpoints.Warehouses
     {
         public static void MapWarehouseEndpoints(this IEndpointRouteBuilder builder)
         {
-            var roles = $"{nameof(UserRole.Admin)}, {nameof(UserRole.Management)}, {nameof(UserRole.Auditor)}";
-
             builder.MapGet(Constant.GetWarehousesRouteName, HandleGetWarehousesAsync)
                 .RequireAuthorization(Constant.WarehousePolicyName)
                 .WithTags(Constant.WarehouseTagName);
