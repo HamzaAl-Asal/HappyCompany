@@ -180,21 +180,15 @@ namespace HappyCompany.App.Services.Warehouses
 
         private async Task<List<string>> GetExistingItemsAsync(IEnumerable<ItemViewModel> itemsViewModel)
         {
-            var existingItems = new List<string>();
+            var itemNames = itemsViewModel.Select(item => item.Name).ToList();
+    
+            var existingItems = await context.Items
+                        .AsNoTracking()
+                        .Where(i => itemNames.Contains(i.Name))
+                        .Select(i => i.Name)
+                        .ToListAsync();
 
-            foreach (var item in itemsViewModel)
-            {
-                var existingItem = await context.Items
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(i => i.Name == item.Name);
-
-                if (existingItem != null)
-                {
-                    existingItems.Add(existingItem.Name);
-                }
-            }
-
-            return existingItems;
+           return existingItems;
         }
 
         private void AddItemsToWarehouse(Warehouse newWarehouse, IEnumerable<ItemViewModel> items)
